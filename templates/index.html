@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Face Detection Stream</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            background-color: #f0f0f0;
+        }
+        #video-container {
+            width: 60%;  /* Ширина основного видео */
+            position: relative;
+        }
+        #faces-container {
+            width: 50%;  /* Ширина для отображения лиц */
+            display: flex;
+            flex-direction: column-reverse; /* Изменено на reverse для инверсии порядка */
+            align-items: center;
+            position: relative;
+        }
+        .face-image {
+            border: 2px solid #ccc;
+            margin: 5px;
+            width: 250px;  /* Размеры лиц */
+            height: 250px; /* Размеры лиц */
+            object-fit: cover; /* Чтобы лицо не искажалось */
+        }
+        .video-face {
+            border: 5px solid rgba(0, 255, 0, 0.7); /* Рамка вокруг лиц в основном потоке */
+            position: absolute; /* Позиционирование для рамки */
+        }
+        h2 {
+            position: absolute; /* Позиционирование для заголовка */
+            top: 10px; /* Отступ сверху */
+            right: 10px; /* По правому краю */
+            z-index: 10; /* На переднем плане */
+        }
+    </style>
+</head>
+<body>
+    <div id="video-container">
+        <img src="{{ url_for('video_feed') }}" alt="Video Stream" style="width: 100%;">
+    </div>
+    <div id="faces-container">
+        <div id="faces-list">
+            <!-- Здесь будут отображаться лица -->
+        </div>
+    </div>
+
+    <script>
+        // Функция для обновления лиц
+        async function updateFaces() {
+            const response = await fetch('/update_faces');
+            const data = await response.json();
+            const facesList = document.getElementById('faces-list');
+            facesList.innerHTML = '';  // Очищаем текущий список лиц
+
+            data.faces.forEach(face => {
+                const faceElement = document.createElement('div');
+                faceElement.innerHTML = `
+                    <img src="data:image/jpeg;base64,${face[0]}" class="face-image">
+                    <p>${face[1]}</p>
+                `;
+                // Добавляем новый элемент в начало списка
+                facesList.insertBefore(faceElement, facesList.firstChild);
+            });
+        }
+
+        // Обновляем лица каждые 2 секунды
+        setInterval(updateFaces, 2000);
+    </script>
+</body>
+</html>
