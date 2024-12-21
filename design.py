@@ -10,8 +10,6 @@ import cv2
 import threading
 import time
 
-print('Start')
-
 data = GetRaw('''SELECT Value FROM Data WHERE `ID` LIKE "s%"''')
 
 SICELS = [str(x[0]).split("|")[0] for x in data]
