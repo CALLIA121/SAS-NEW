@@ -93,4 +93,4 @@ def fprint(*pr, sep="", end="\n", type="STD", ret=False):
             return collorText + text + reset
         
 
-fprint("Smart attadenced system", type="C6 T1 BANER")
+fprint("NEW Smart attadenced system", type="C6 T1 BANER")
